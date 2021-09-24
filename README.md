@@ -17,3 +17,11 @@ Configuration file for `preload` can be generated via:
 
 Although there are better ways to do this, I'll simply leave it like this for
 now.
+
+## Why `meson`?
+
+- Because it is easier to configure.
+- Also because I hate Make, CMake and all other shit.
+- Also because I had no intention to understand how the author's build config
+  worked/works.
+- Because I wanted a cleaner codebase.
