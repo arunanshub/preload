@@ -1,6 +1,6 @@
 # vim:set et sw=2 ts=4 tw=80 fdm=marker:
-project('preload-meson', 'c',
-  version : '0.1',
+project('preload', 'c',
+  version : '0.1.0',
   default_options : ['warning_level=3'])
 
 # source files {{{1 #
@@ -36,13 +36,18 @@ src = [
 # 1}}} #
 
 # configuration data {{{1 #
+PACKAGE_STRING = '"@0@ @1@"'.format(
+  meson.project_name(),
+  meson.project_version()
+)
+
 conf_data = configuration_data({
-  'VERSION'           : '"0.1.0"',
-  'PACKAGE'           : '"preload"',
+  'PACKAGE'           : '"@0@"'.format(meson.project_name()),
   'LOGDIR'            : '"/var/log"',
   'SYSCONFDIR'        : '"/etc"',
   'PKGLOCALSTATEDIR'  : '"/var/lib"',
-  'PACKAGE_STRING'    : '"preload"',
+  'PACKAGE_VERSION'   : '"@0@"'.format(meson.project_version()),
+  'PACKAGE_STRING'    : PACKAGE_STRING,
   'PACKAGE_NAME'      : '"preload"',
   'PACKAGE_BUGREPORT' : '"https://github.com/arunanshub/preload/issues"',
 })
@@ -73,7 +78,7 @@ executable(
   src,
   dependencies : [
     dependency('glib-2.0'),
-    cc.find_library('m', required : true), # add math library
+    cc.find_library('m', required : false), # add math library
   ],
   install : true,
 )
