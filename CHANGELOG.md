@@ -1,3 +1,9 @@
+## 0.1.1 (2021-09-24)
+
+### Fix
+
+- **confkeys**: fix indentations caused due to `clang-format`
+
 ## 0.1.0 (2021-09-24)
 
 ### Refactor
