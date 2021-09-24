@@ -370,7 +370,7 @@ preload_exemap_t *preload_exe_map_new(preload_exe_t *exe, preload_map_t *map) {
     exe_add_map_size(exemap, exe);
     return exemap;
 }
-                                     // key
+// key
 static void shift_preload_markov_new(gpointer G_GNUC_UNUSED key,
                                      // value            user_data
                                      preload_exe_t *a, preload_exe_t *b) {
@@ -399,17 +399,17 @@ void preload_state_unregister_exe(preload_exe_t *exe) {
     g_hash_table_remove(state->exes, exe);
 }
 
-#define TAG_PRELOAD                 "PRELOAD"
-#define TAG_MAP                     "MAP"
-#define TAG_BADEXE                  "BADEXE"
-#define TAG_EXE                     "EXE"
-#define TAG_EXEMAP                  "EXEMAP"
-#define TAG_MARKOV                  "MARKOV"
+#define TAG_PRELOAD "PRELOAD"
+#define TAG_MAP "MAP"
+#define TAG_BADEXE "BADEXE"
+#define TAG_EXE "EXE"
+#define TAG_EXEMAP "EXEMAP"
+#define TAG_MARKOV "MARKOV"
 
-#define READ_TAG_ERROR              "invalid tag"
-#define READ_SYNTAX_ERROR           "invalid syntax"
-#define READ_INDEX_ERROR            "invalid index"
-#define READ_DUPLICATE_INDEX_ERROR  "duplicate index"
+#define READ_TAG_ERROR "invalid tag"
+#define READ_SYNTAX_ERROR "invalid syntax"
+#define READ_INDEX_ERROR "invalid index"
+#define READ_DUPLICATE_INDEX_ERROR "duplicate index"
 #define READ_DUPLICATE_OBJECT_ERROR "duplicate object"
 
 typedef struct _read_context_t {
