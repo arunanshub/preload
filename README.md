@@ -11,3 +11,12 @@ directory instead of `src/`.
 
 So, if you're going to use it, make sure that you check
 [`meson.build`](/meson.build) first.
+
+Configuration file for `preload` can be generated via:
+
+```sh
+./gen.preload.conf.sh preload.conf.in confkeys.in
+```
+
+Although there are better ways to do this, I'll simply leave it like this for
+now.
