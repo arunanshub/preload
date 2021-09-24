@@ -32,7 +32,7 @@
 #include <linux/fs.h>
 #endif
 
-static void set_block(preload_map_t *file, gboolean use_inode) {
+static void set_block(preload_map_t *file, gboolean G_GNUC_UNUSED use_inode) {
     int fd = -1;
     int block = 0;
     struct stat buf;
