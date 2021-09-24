@@ -11,4 +11,4 @@ build script instead of automating the whole process. Also, the entire codebase
 is in the root dir instead of being in a `src/` directory.
 
 So, if you're going to use it, make sure that you check
-[`meson.build`][/meson.build] first.
+[`meson.build`](/meson.build) first.
