@@ -19,6 +19,11 @@ conf_data = configuration_data({
   'PACKAGE_NAME'      : '"preload"',
   'PACKAGE_BUGREPORT' : '"https://github.com/arunanshub/preload/issues"',
 })
+
+configure_file(
+  output : 'config.h',
+  configuration : conf_data,
+)
 # 1}}} #
 
 # project arguments {{{1 #
@@ -43,3 +48,11 @@ dependencies = [
 
 include = include_directories('include')
 subdir('src')
+
+executable(
+  'preload',
+  src,
+  include_directories : include,
+  dependencies : dependencies,
+  install : true,
+)
