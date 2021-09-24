@@ -135,10 +135,12 @@ static void help_func(gboolean err, gboolean help2man) {
 
     fprintf(
         f,
+        "%s\n\n"
         "Usage: %s [OPTION]...\n"
         "%s is an adaptive readahead daemon that prefetches files mapped by\n"
         "applications from the disk to reduce application startup time.\n\n",
-        PACKAGE, PACKAGE_NAME);
+        PACKAGE_STRING,
+        PACKAGE, PACKAGE_NAME); // TODO: Should `PACKAGE` be `PACKAGE_NAME`?
 
     for (opt = opts; opt->name; opt++) {
         int size = strlen(opt->name);
