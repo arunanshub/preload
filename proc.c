@@ -102,7 +102,7 @@ size_t proc_get_maps(pid_t pid, GHashTable *maps, GSet **exemaps) {
         int count;
 
         count =
-            sscanf(buffer, "%lx-%lx %*15s %lx %*x:%*x %*u %" FILELENSTR "s",
+            sscanf(buffer, "%ld-%ld %*15s %ld %*x:%*x %*u %" FILELENSTR "s",
                    &start, &end, &offset, file);
 
         if (count != 4 || !sanitize_file(file) ||
@@ -156,7 +156,7 @@ void proc_foreach(GHFunc func, gpointer user_data) {
     if (!proc) g_error("failed opening /proc: %s", strerror(errno));
 
     while ((entry = readdir(proc))) {
-        if (entry->d_name && all_digits(entry->d_name)) {
+        if (/*entry->d_name &&*/ all_digits(entry->d_name)) {
             pid_t pid;
             char name[32];
             char exe_buffer[FILELEN];
