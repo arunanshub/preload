@@ -2,7 +2,7 @@
 
 > This is currently a WIP
 
-This preload is a clone of [Behdad Esfahbod's preload](https://preload.sf.net).
+This preload is a clone of [Behdad Esfahbod's preload](http://preload.sf.net).
 The only difference is that this project uses [`meson`](https://mesonbuild.com)
 as its build system.
 
