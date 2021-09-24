@@ -652,7 +652,7 @@ static char *read_state(GIOChannel *f) {
                 break;
             }
 
-            version = VERSION;
+            version = PACKAGE_VERSION;
             major_ver_run = strtod(version, NULL);
 
             if (major_ver_run < major_ver_read) {
@@ -767,7 +767,7 @@ typedef struct _write_context_t {
 
 static void write_header(write_context_t *wc) {
     write_tag(TAG_PRELOAD);
-    g_string_printf(wc->line, "%s\t%d", VERSION, state->time);
+    g_string_printf(wc->line, "%s\t%d", PACKAGE_VERSION, state->time);
     write_string(wc->line);
     write_ln();
 }
