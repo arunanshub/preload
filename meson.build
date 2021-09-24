@@ -52,6 +52,8 @@ executable(
     '-DPACKAGE_STRING="testing"',
     '-DPACKAGE_NAME="testing"',
     '-DPACKAGE_BUGREPORT="testing"',
+    '-DHAVE_SYS_STAT_H',
+    '-DHAVE_SYS_TYPES_H',
   ],
   install : true,
 )
