@@ -10,7 +10,7 @@ typedef struct _preload_memory_t {
     /* all the following are in kilobytes (1024) */
 
     int total;   /* total memory */
-    int free;    /* free memory */
+    int free_;    /* free memory */
     int buffers; /* buffers memory */
     int cached;  /* page-cache memory */
 

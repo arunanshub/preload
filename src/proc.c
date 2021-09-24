@@ -224,7 +224,7 @@ void proc_get_memstat(preload_memory_t *mem) {
 
     open_file("/proc/meminfo");
     read_tag("MemTotal:", mem->total);
-    read_tag("MemFree:", mem->free);
+    read_tag("MemFree:", mem->free_);
     read_tag("Buffers:", mem->buffers);
     read_tag("Cached:", mem->cached);
 

@@ -169,7 +169,7 @@ void preload_prophet_readahead(GPtrArray *maps_arr) {
 
     /* memory we are allowed to use for prefetching */
     memavail = clamp_percent(conf->model.memtotal) * (memstat.total / 100) +
-               clamp_percent(conf->model.memfree) * (memstat.free / 100);
+               clamp_percent(conf->model.memfree) * (memstat.free_ / 100);
     memavail = max(0, memavail);
     memavail += clamp_percent(conf->model.memcached) * (memstat.cached / 100);
 
