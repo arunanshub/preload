@@ -1,6 +1,6 @@
 # vim:set et sw=2 ts=4 tw=80 fdm=marker:
 project('preload', 'c',
-  version : '0.1.1',
+  version : '0.1.2',
   default_options : ['warning_level=3'])
 
 # configuration data {{{1 #

@@ -1,3 +1,9 @@
+## 0.1.2 (2021-09-24)
+
+### Refactor
+
+- don't duplicate `free` function's name
+
 ## 0.1.1 (2021-09-24)
 
 ### Fix
