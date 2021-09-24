@@ -38,6 +38,13 @@ executable(
   dependencies : [
     dependency('glib-2.0'),
   ],
-  c_args : ['-DHAVE_STRINGIZE'],
+  c_args : [
+    '-DHAVE_STRINGIZE',
+    '-DVERSION=1',
+    '-DPACKAGE="preload"',
+    '-DLOGDIR=""',
+    '-DSYSCONFDIR=""',
+    '-DPKGLOCALSTATEDIR=""',
+  ],
   install : true,
 )
