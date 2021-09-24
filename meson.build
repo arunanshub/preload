@@ -42,8 +42,8 @@ add_project_arguments(
 cc = meson.get_compiler('c')
 
 dependencies = [
-    dependency('glib-2.0'),
-    cc.find_library('m', required : false), # add math library
+  dependency('glib-2.0'),
+  cc.find_library('m', required : false), # add math library
 ]
 
 include = include_directories('include')
