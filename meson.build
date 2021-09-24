@@ -1,0 +1,43 @@
+project('preload-meson', 'c',
+  version : '0.1',
+  default_options : ['warning_level=3'])
+
+src = [
+  'cmdline.c',
+  'cmdline.h',
+  'common.h',
+  'conf.c',
+  'conf.h',
+  'confkeys.h',
+  # 'gen.preload.conf.sh',
+  'log.c',
+  'log.h',
+  # 'Makefile.am',
+  # 'Makefile.in',
+  # 'preload.8',
+  # 'preload.8.i',
+  'preload.c',
+  # 'preload.conf.in',
+  'preload.h',
+  'proc.c',
+  'proc.h',
+  'prophet.c',
+  'prophet.h',
+  'readahead.c',
+  'readahead.h',
+  # 'runtests.sh',
+  'spy.c',
+  'spy.h',
+  'state.c',
+  'state.h',
+]
+
+executable(
+  'preload',
+  src,
+  dependencies : [
+    dependency('glib-2.0'),
+  ],
+  c_args : ['-DHAVE_STRINGIZE'],
+  install : true,
+)
