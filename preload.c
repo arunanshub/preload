@@ -97,7 +97,7 @@ static gboolean sig_handler_sync(gpointer data) {
     return FALSE;
 }
 
-static RETSIGTYPE sig_handler(int sig) {
+static /*RETSIGTYPE*/ void sig_handler(int sig) {
     // 3rd argument simply transports (casts) the signal as a pointer
     // eg: 3rd argument = (void*) sig
     g_timeout_add(0, sig_handler_sync, GINT_TO_POINTER(sig));

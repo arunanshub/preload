@@ -3,6 +3,7 @@
 
 /* preload_memory_t: structure holding information
  * about memory conditions of the system. */
+#include "common.h"
 typedef struct _preload_memory_t {
     /* runtime: */
 

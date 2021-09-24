@@ -32,11 +32,15 @@ src = [
   'state.h',
 ]
 
+cc = meson.get_compiler('c')
+m_dep = cc.find_library('m', required : true)
+
 executable(
   'preload',
   src,
   dependencies : [
     dependency('glib-2.0'),
+    m_dep,
   ],
   c_args : [
     '-DHAVE_STRINGIZE',
@@ -45,6 +49,9 @@ executable(
     '-DLOGDIR=""',
     '-DSYSCONFDIR=""',
     '-DPKGLOCALSTATEDIR=""',
+    '-DPACKAGE_STRING="testing"',
+    '-DPACKAGE_NAME="testing"',
+    '-DPACKAGE_BUGREPORT="testing"',
   ],
   install : true,
 )
