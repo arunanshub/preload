@@ -33,7 +33,7 @@
 
 /* horrible hack to shut the double-declaration of g_snprintf up may
  * be removed after development is done.  pretty harmless though. */
-#define __G_PRINTF_H__
+/* #define __G_PRINTF_H__ */
 
 #include <glib/gstdio.h>
 
@@ -430,7 +430,7 @@ static void read_map(read_context_t *rc) {
     long offset, length;
     char *path;
 
-    if (6 > sscanf(rc->line, "%d %d %lu %lu %d %" FILELENSTR "s", &i,
+    if (6 > sscanf(rc->line, "%d %d %ld %ld %d %" FILELENSTR "s", &i,
                    &update_time, &offset, &length, &expansion, rc->filebuf)) {
         rc->errmsg = READ_SYNTAX_ERROR;
         return;
