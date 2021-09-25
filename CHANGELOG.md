@@ -1,3 +1,13 @@
+## 0.1.3 (2021-09-25)
+
+### Refactor
+
+- use `G_CALLBACK` macro to construct callbacks
+
+### Fix
+
+- get rid of cast warnings
+
 ## 0.1.2 (2021-09-24)
 
 ### Refactor
