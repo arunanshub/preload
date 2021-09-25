@@ -85,7 +85,8 @@ static void new_exe_callback(char *path, pid_t pid) {
         size = proc_get_maps(pid, state->maps, &exemaps);
         if (!size) {
             /* process just died, clean up */
-            g_set_foreach(exemaps, (GFunc)preload_exemap_free, NULL);
+            g_set_foreach(exemaps, (GFunc)(GCallback)preload_exemap_free,
+                          NULL);
             g_set_free(exemaps);
             return;
         }
@@ -111,7 +112,8 @@ static void running_exe_inc_time(gpointer G_GNUC_UNUSED key,
 /* adjust states on exes that change state (running/not-running) */
 static void exe_changed_callback(preload_exe_t *exe) {
     exe->change_timestamp = state->time;
-    g_set_foreach(exe->markovs, (GFunc)preload_markov_state_changed, NULL);
+    g_set_foreach(exe->markovs, (GFunc)(GCallback)preload_markov_state_changed,
+                  NULL);
 }
 
 void preload_spy_scan(gpointer data) {
@@ -122,12 +124,12 @@ void preload_spy_scan(gpointer data) {
     new_exes = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
 
     /* mark each running exe with fresh timestamp */
-    proc_foreach((GHFunc)running_process_callback, data);
+    proc_foreach((GHFunc)(GCallback)running_process_callback, data);
     state->last_running_timestamp = state->time;
 
     /* figure out who's not running by checking their timestamp */
-    g_slist_foreach(state->running_exes, (GFunc)already_running_exe_callback,
-                    data);
+    g_slist_foreach(state->running_exes,
+                    (GFunc)(GCallback)already_running_exe_callback, data);
 
     g_slist_free(state->running_exes);
     state->running_exes = new_running_exes;
@@ -139,18 +141,19 @@ void preload_spy_update_model(gpointer data) {
     int period;
 
     /* register newly discovered exes */
-    g_hash_table_foreach(new_exes, (GHFunc)new_exe_callback, data);
+    g_hash_table_foreach(new_exes, (GHFunc)(GCallback)new_exe_callback, data);
     g_hash_table_destroy(new_exes);
 
     /* and adjust states for those changing */
-    g_slist_foreach(state_changed_exes, (GFunc)exe_changed_callback, data);
+    g_slist_foreach(state_changed_exes, (GFunc)(GCallback)exe_changed_callback,
+                    data);
     g_slist_free(state_changed_exes);
 
     /* do some accounting */
     period = state->time - state->last_accounting_timestamp;
-    g_hash_table_foreach(state->exes, (GHFunc)running_exe_inc_time,
+    g_hash_table_foreach(state->exes, (GHFunc)(GCallback)running_exe_inc_time,
                          GINT_TO_POINTER(period));
-    preload_markov_foreach((GFunc)running_markov_inc_time,
+    preload_markov_foreach((GFunc)(GCallback)running_markov_inc_time,
                            GINT_TO_POINTER(period));
     state->last_accounting_timestamp = state->time;
 }

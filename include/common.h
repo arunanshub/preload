@@ -20,6 +20,7 @@
 #include <sys/stat.h>
 #endif
 
+#include <glib-object.h>
 #include <glib.h>
 
 #ifdef HAVE_STRINGIZE
