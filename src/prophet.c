@@ -202,19 +202,19 @@ void preload_prophet_readahead(GPtrArray *maps_arr) {
 
 void preload_prophet_predict(gpointer data) {
     /* reset probabilities that we are gonna compute */
-    g_hash_table_foreach(state->exes, (GHFunc)(GCallback)exe_zero_prob, data);
-    g_ptr_array_foreach(state->maps_arr, (GFunc)(GCallback)map_zero_prob,
+    g_hash_table_foreach(state->exes, (GHFunc)G_CALLBACK(exe_zero_prob), data);
+    g_ptr_array_foreach(state->maps_arr, (GFunc)G_CALLBACK(map_zero_prob),
                         data);
 
     /* markovs bid in exes */
-    preload_markov_foreach((GFunc)(GCallback)markov_bid_in_exes, data);
+    preload_markov_foreach((GFunc)G_CALLBACK(markov_bid_in_exes), data);
 
     if (preload_log_level >= 9)
-        g_hash_table_foreach(state->exes, (GHFunc)(GCallback)exe_prob_print,
+        g_hash_table_foreach(state->exes, (GHFunc)G_CALLBACK(exe_prob_print),
                              data);
 
     /* exes bid in maps */
-    preload_exemap_foreach((GHFunc)(GCallback)exemap_bid_in_maps, data);
+    preload_exemap_foreach((GHFunc)G_CALLBACK(exemap_bid_in_maps), data);
 
     /* sort maps on probability */
     g_ptr_array_sort(state->maps_arr, (GCompareFunc)map_prob_compare);

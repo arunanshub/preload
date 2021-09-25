@@ -348,7 +348,7 @@ void preload_exe_free(preload_exe_t *exe) {
     g_return_if_fail(exe);
     g_return_if_fail(exe->path);
 
-    g_set_foreach(exe->exemaps, (GFunc)(GCallback)preload_exemap_free, NULL);
+    g_set_foreach(exe->exemaps, (GFunc)G_CALLBACK(preload_exemap_free), NULL);
     g_set_free(exe->exemaps);
     exe->exemaps = NULL;
     g_set_foreach(exe->markovs, (GFunc)preload_markov_free, exe);
@@ -697,10 +697,10 @@ static char *read_state(GIOChannel *f) {
     if (rc.err) g_error_free(rc.err);
 
     if (!errmsg) {
-        proc_foreach((GHFunc)(GCallback)set_running_process_callback,
+        proc_foreach((GHFunc)G_CALLBACK(set_running_process_callback),
                      GINT_TO_POINTER(state->time));
         state->last_running_timestamp = state->time;
-        preload_markov_foreach((GFunc)(GCallback)set_markov_state_callback,
+        preload_markov_foreach((GFunc)G_CALLBACK(set_markov_state_callback),
                                NULL);
     }
 
@@ -869,7 +869,7 @@ static char *write_state(GIOChannel *f) {
 
     // NOTE: Both k, v used
     if (!wc.err)
-        g_hash_table_foreach(state->bad_exes, (GHFunc)(GCallback)write_badexe,
+        g_hash_table_foreach(state->bad_exes, (GHFunc)G_CALLBACK(write_badexe),
                              &wc);
 
     // NOTE: value used; key unused
@@ -936,8 +936,8 @@ void preload_state_save(const char *statefile) {
     }
 
     /* clean up bad exes once in a while */
-    g_hash_table_foreach_remove(state->bad_exes, (GHRFunc)(GCallback)true_func,
-                                NULL);
+    g_hash_table_foreach_remove(state->bad_exes,
+                                (GHRFunc)G_CALLBACK(true_func), NULL);
 }
 
 void preload_state_free(void) {
@@ -1017,7 +1017,7 @@ static gboolean preload_state_autosave(void) {
     preload_state_save(autosave_statefile);
 
     g_timeout_add_seconds(conf->system.autosave,
-                          (GSourceFunc)(GCallback)preload_state_autosave,
+                          (GSourceFunc)G_CALLBACK(preload_state_autosave),
                           NULL);
     return FALSE;
 }
@@ -1027,7 +1027,7 @@ void preload_state_run(const char *statefile) {
     if (statefile) {
         autosave_statefile = statefile;
         g_timeout_add_seconds(conf->system.autosave,
-                              (GSourceFunc)(GCallback)preload_state_autosave,
+                              (GSourceFunc)G_CALLBACK(preload_state_autosave),
                               NULL);
     }
 }
