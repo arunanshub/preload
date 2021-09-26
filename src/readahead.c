@@ -32,7 +32,7 @@
 #include <linux/fs.h>
 #endif
 
-static void set_block(preload_map_t *file, gboolean G_GNUC_UNUSED use_inode) {
+static void set_block(preload_map_t* file, gboolean G_GNUC_UNUSED use_inode) {
     int fd = -1;
     int block = 0;
     struct stat buf;
@@ -41,14 +41,17 @@ static void set_block(preload_map_t *file, gboolean G_GNUC_UNUSED use_inode) {
     file->block = 0;
 
     fd = open(file->path, O_RDONLY);
-    if (fd < 0) return;
+    if (fd < 0)
+        return;
 
-    if (0 > fstat(fd, &buf)) return;
+    if (0 > fstat(fd, &buf))
+        return;
 
 #ifdef FIBMAP
     if (!use_inode) {
         block = file->offset / buf.st_blksize;
-        if (0 > ioctl(fd, FIBMAP, &block)) block = 0;
+        if (0 > ioctl(fd, FIBMAP, &block))
+            block = 0;
     }
 #endif
 
@@ -61,8 +64,8 @@ static void set_block(preload_map_t *file, gboolean G_GNUC_UNUSED use_inode) {
 }
 
 /* Compare files by path */
-static int map_path_compare(const preload_map_t **pa,
-                            const preload_map_t **pb) {
+static int map_path_compare(const preload_map_t** pa,
+                            const preload_map_t** pb) {
     const preload_map_t *a = *pa, *b = *pb;
     int i;
 
@@ -76,8 +79,8 @@ static int map_path_compare(const preload_map_t **pa,
 }
 
 /* Compare files by block */
-static int map_block_compare(const preload_map_t **pa,
-                             const preload_map_t **pb) {
+static int map_block_compare(const preload_map_t** pa,
+                             const preload_map_t** pb) {
     const preload_map_t *a = *pa, *b = *pb;
     int i;
 
@@ -98,15 +101,17 @@ static void wait_for_children(void) {
     /* wait for child processes to terminate */
     while (procs > 0) {
         int status;
-        if (wait(&status) > 0) procs--;
+        if (wait(&status) > 0)
+            procs--;
     }
 }
 
-static void process_file(const char *path, size_t offset, size_t length) {
+static void process_file(const char* path, size_t offset, size_t length) {
     int fd = -1;
     int maxprocs = conf->system.maxprocs;
 
-    if (procs >= maxprocs) wait_for_children();
+    if (procs >= maxprocs)
+        wait_for_children();
 
     if (maxprocs > 0) {
         /* parallel reading */
@@ -142,7 +147,7 @@ static void process_file(const char *path, size_t offset, size_t length) {
     }
 }
 
-static void sort_by_block_or_inode(preload_map_t **files, int file_count) {
+static void sort_by_block_or_inode(preload_map_t** files, int file_count) {
     int i;
     gboolean need_block = FALSE;
 
@@ -167,7 +172,7 @@ static void sort_by_block_or_inode(preload_map_t **files, int file_count) {
     qsort(files, file_count, sizeof(*files), (GCompareFunc)map_block_compare);
 }
 
-static void sort_files(preload_map_t **files, int file_count) {
+static void sort_files(preload_map_t** files, int file_count) {
     switch (conf->system.sortstrategy) {
         case SORT_NONE:
             break;
@@ -191,9 +196,9 @@ static void sort_files(preload_map_t **files, int file_count) {
     }
 }
 
-int preload_readahead(preload_map_t **files, int file_count) {
+int preload_readahead(preload_map_t** files, int file_count) {
     int i;
-    const char *path = NULL;
+    const char* path = NULL;
     size_t offset = 0, length = 0;
     int processed = 0;
 

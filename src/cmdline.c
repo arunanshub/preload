@@ -40,10 +40,10 @@ static const struct option opts[] = {
     {"debug", 0, 0, 'd'},    {NULL, 0, 0, 0},
 };
 
-static const char *help2man_str =
+static const char* help2man_str =
     "Display command line parameters and their "
     "default values, and exit."; /* help2man */
-static const char *opts_help[] = {
+static const char* opts_help[] = {
     "Display this information and exit.",                        /* help */
     "Display version information and exit.",                     /* version */
     "Set configuration file. Empty string means no conf file.",  /* conffile */
@@ -55,7 +55,7 @@ static const char *opts_help[] = {
     "Set the verbosity level.  Levels 0 to 10 are recognized.", /* verbose */
     "Debug mode: --logfile '' --foreground --verbose 9",        /* debug */
 };
-static const char *opts_default[] = {
+static const char* opts_default[] = {
     NULL,                     /* help */
     NULL,                     /* version */
     DEFAULT_CONFFILE,         /* conffile */
@@ -70,7 +70,7 @@ static const char *opts_default[] = {
 static void version_func(void) G_GNUC_NORETURN;
 static void help_func(gboolean err, gboolean help2man) G_GNUC_NORETURN;
 
-void preload_cmdline_parse(int *argc, char ***argv) {
+void preload_cmdline_parse(int* argc, char*** argv) {
     for (;;) {
         int i;
         i = getopt_long(*argc, *argv, "hHvc:s:l:fn:V:d", opts, NULL);
@@ -128,8 +128,8 @@ static void version_func(void) {
 }
 
 static void help_func(gboolean err, gboolean help2man) {
-    FILE *f = err ? stderr : stdout;
-    const struct option *opt;
+    FILE* f = err ? stderr : stdout;
+    const struct option* opt;
     const char **hlp, **dft;
     int max = 0;
 
@@ -144,14 +144,16 @@ static void help_func(gboolean err, gboolean help2man) {
 
     for (opt = opts; opt->name; opt++) {
         int size = strlen(opt->name);
-        if (size > max) max = size;
+        if (size > max)
+            max = size;
     }
 
     for (opt = opts, hlp = opts_help, dft = opts_default; opt->name;
          opt++, hlp++, dft++) {
         fprintf(f, "  -%c, --%-*s  %s\n", opt->val, max, opt->name,
                 opt->val == 'h' && help2man ? help2man_str : *hlp);
-        if (*dft) fprintf(f, "          %*s(default is %s)\n", max, "", *dft);
+        if (*dft)
+            fprintf(f, "          %*s(default is %s)\n", max, "", *dft);
     }
 
     fprintf(f, "\nReport bugs to <%s>\n", PACKAGE_BUGREPORT);

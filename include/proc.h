@@ -20,10 +20,10 @@ typedef struct _preload_memory_t {
 } preload_memory_t;
 
 /* read system memory information */
-void proc_get_memstat(preload_memory_t *mem);
+void proc_get_memstat(preload_memory_t* mem);
 
 /* returns sum of length of maps, in bytes, or 0 if failed */
-size_t proc_get_maps(pid_t pid, GHashTable *maps, GSet **exemaps);
+size_t proc_get_maps(pid_t pid, GHashTable* maps, GSet** exemaps);
 
 /* foreach process running, passes pid as key and exe path as value */
 void proc_foreach(GHFunc func, gpointer user_data);

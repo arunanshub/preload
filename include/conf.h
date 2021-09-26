@@ -37,8 +37,8 @@ typedef struct _preload_conf_t {
         gboolean dopredict;
         int autosave;
 
-        char **mapprefix;
-        char **exeprefix;
+        char** mapprefix;
+        char** exeprefix;
 
         int maxprocs;
         enum {
@@ -53,7 +53,7 @@ typedef struct _preload_conf_t {
 
 extern preload_conf_t conf[1];
 
-void preload_conf_load(const char *conffile, gboolean fail);
+void preload_conf_load(const char* conffile, gboolean fail);
 void preload_conf_dump_log(void);
 
 #endif

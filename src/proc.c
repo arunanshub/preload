@@ -43,8 +43,8 @@
  * the linking addresses.
  */
 
-static gboolean sanitize_file(char *file) {
-    char *p;
+static gboolean sanitize_file(char* file) {
+    char* p;
 
     if (*file != '/') /* not a file-backed object */
         return FALSE;
@@ -57,15 +57,16 @@ static gboolean sanitize_file(char *file) {
     }
 
     /* and (non-prelinked) deleted files */
-    if (strstr(file, "(deleted)")) return FALSE;
+    if (strstr(file, "(deleted)"))
+        return FALSE;
 
     return TRUE;
 }
 
-static gboolean accept_file(char *file, char *const *prefix) {
+static gboolean accept_file(char* file, char* const* prefix) {
     if (prefix)
         for (; *prefix; prefix++) {
-            const char *p = *prefix;
+            const char* p = *prefix;
             gboolean accept;
             if (*p == '!') {
                 p++;
@@ -73,20 +74,22 @@ static gboolean accept_file(char *file, char *const *prefix) {
             } else {
                 accept = TRUE;
             }
-            if (!strncmp(file, p, strlen(p))) return accept;
+            if (!strncmp(file, p, strlen(p)))
+                return accept;
         }
 
     /* accept if no match */
     return TRUE;
 }
 
-size_t proc_get_maps(pid_t pid, GHashTable *maps, GSet **exemaps) {
+size_t proc_get_maps(pid_t pid, GHashTable* maps, GSet** exemaps) {
     char name[32];
-    FILE *in;
+    FILE* in;
     size_t size = 0;
     char buffer[1024];
 
-    if (exemaps) *exemaps = g_set_new();
+    if (exemaps)
+        *exemaps = g_set_new();
 
     g_snprintf(name, sizeof(name) - 1, "/proc/%d/maps", pid);
     in = fopen(name, "r");
@@ -114,7 +117,7 @@ size_t proc_get_maps(pid_t pid, GHashTable *maps, GSet **exemaps) {
 
         if (maps || exemaps) {
             gpointer orig_map;
-            preload_map_t *map;
+            preload_map_t* map;
             gpointer value;
 
             map = preload_map_new(file, offset, length);
@@ -123,12 +126,12 @@ size_t proc_get_maps(pid_t pid, GHashTable *maps, GSet **exemaps) {
                 if (g_hash_table_lookup_extended(maps, map, &orig_map,
                                                  &value)) {
                     preload_map_free(map);
-                    map = (preload_map_t *)orig_map;
+                    map = (preload_map_t*)orig_map;
                 }
             }
 
             if (exemaps) {
-                preload_exemap_t *exemap;
+                preload_exemap_t* exemap;
                 exemap = preload_exemap_new(map);
                 g_set_add(*exemaps, exemap);
             }
@@ -140,20 +143,22 @@ size_t proc_get_maps(pid_t pid, GHashTable *maps, GSet **exemaps) {
     return size;
 }
 
-static gboolean all_digits(const char *s) {
+static gboolean all_digits(const char* s) {
     for (; *s; ++s) {
-        if (!isdigit(*s)) return FALSE;
+        if (!isdigit(*s))
+            return FALSE;
     }
     return TRUE;
 }
 
 void proc_foreach(GHFunc func, gpointer user_data) {
-    DIR *proc;
-    struct dirent *entry;
+    DIR* proc;
+    struct dirent* entry;
     pid_t selfpid = getpid();
 
     proc = opendir("/proc");
-    if (!proc) g_error("failed opening /proc: %s", strerror(errno));
+    if (!proc)
+        g_error("failed opening /proc: %s", strerror(errno));
 
     while ((entry = readdir(proc))) {
         if (/*entry->d_name &&*/ all_digits(entry->d_name)) {
@@ -163,7 +168,8 @@ void proc_foreach(GHFunc func, gpointer user_data) {
             int len;
 
             pid = atoi(entry->d_name);
-            if (pid == selfpid) continue;
+            if (pid == selfpid)
+                continue;
 
             g_snprintf(name, sizeof(name) - 1, "/proc/%s/exe", entry->d_name);
 
@@ -186,41 +192,45 @@ void proc_foreach(GHFunc func, gpointer user_data) {
     closedir(proc);
 }
 
-#define open_file(filename)                                          \
-    G_STMT_START {                                                   \
-        int fd, len;                                                 \
-        len = 0;                                                     \
-        if ((fd = open(filename, O_RDONLY)) != -1) {                 \
-            if ((len = read(fd, buf, sizeof(buf) - 1)) < 0) len = 0; \
-            close(fd);                                               \
-        }                                                            \
-        buf[len] = '\0';                                             \
-    }                                                                \
+#define open_file(filename)                                 \
+    G_STMT_START {                                          \
+        int fd, len;                                        \
+        len = 0;                                            \
+        if ((fd = open(filename, O_RDONLY)) != -1) {        \
+            if ((len = read(fd, buf, sizeof(buf) - 1)) < 0) \
+                len = 0;                                    \
+            close(fd);                                      \
+        }                                                   \
+        buf[len] = '\0';                                    \
+    }                                                       \
     G_STMT_END
 
-#define read_tag(tag, v)                   \
-    G_STMT_START {                         \
-        const char *b;                     \
-        b = strstr(buf, tag " ");          \
-        if (b) sscanf(b, tag " %d", &(v)); \
-    }                                      \
+#define read_tag(tag, v)                \
+    G_STMT_START {                      \
+        const char* b;                  \
+        b = strstr(buf, tag " ");       \
+        if (b)                          \
+            sscanf(b, tag " %d", &(v)); \
+    }                                   \
     G_STMT_END
 
-#define read_tag2(tag, v1, v2)                        \
-    G_STMT_START {                                    \
-        const char *b;                                \
-        b = strstr(buf, tag " ");                     \
-        if (b) sscanf(b, tag " %d %d", &(v1), &(v2)); \
-    }                                                 \
+#define read_tag2(tag, v1, v2)                     \
+    G_STMT_START {                                 \
+        const char* b;                             \
+        b = strstr(buf, tag " ");                  \
+        if (b)                                     \
+            sscanf(b, tag " %d %d", &(v1), &(v2)); \
+    }                                              \
     G_STMT_END
 
-void proc_get_memstat(preload_memory_t *mem) {
+void proc_get_memstat(preload_memory_t* mem) {
     static int pagesize = 0;
     char buf[4096];
 
     memset(mem, 0, sizeof(*mem));
 
-    if (!pagesize) pagesize = getpagesize();
+    if (!pagesize)
+        pagesize = getpagesize();
 
     open_file("/proc/meminfo");
     read_tag("MemTotal:", mem->total);

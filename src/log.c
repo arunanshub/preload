@@ -29,11 +29,12 @@
 
 int preload_log_level = DEFAULT_LOGLEVEL;
 
-static void preload_log(const char *log_domain, GLogLevelFlags log_level,
-                        const char *message,
+static void preload_log(const char* log_domain,
+                        GLogLevelFlags log_level,
+                        const char* message,
                         gpointer G_GNUC_UNUSED user_data) {
     time_t curtime;
-    char *timestr;
+    char* timestr;
 
     /* ignore unimportant messages */
     if (log_level <= G_LOG_LEVEL_ERROR << preload_log_level) {
@@ -58,7 +59,7 @@ static void preload_log(const char *log_domain, GLogLevelFlags log_level,
     }
 }
 
-void preload_log_init(const char *logfile) {
+void preload_log_init(const char* logfile) {
     if (logfile && *logfile) {
         int logfd;
         int nullfd;
@@ -87,10 +88,11 @@ void preload_log_init(const char *logfile) {
     g_log_set_default_handler(preload_log, NULL);
 }
 
-void preload_log_reopen(const char *logfile) {
+void preload_log_reopen(const char* logfile) {
     int logfd;
 
-    if (!(logfile && *logfile)) return;
+    if (!(logfile && *logfile))
+        return;
 
     g_message("reopening log file %s", logfile);
 

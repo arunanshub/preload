@@ -39,9 +39,10 @@
 
 preload_state_t state[1];
 
-preload_map_t *preload_map_new(const char *path, size_t offset,
+preload_map_t* preload_map_new(const char* path,
+                               size_t offset,
                                size_t length) {
-    preload_map_t *map;
+    preload_map_t* map;
 
     g_return_val_if_fail(path, NULL);
 
@@ -55,7 +56,7 @@ preload_map_t *preload_map_new(const char *path, size_t offset,
     return map;
 }
 
-void preload_map_free(preload_map_t *map) {
+void preload_map_free(preload_map_t* map) {
     g_return_if_fail(map);
     g_return_if_fail(map->refcount == 0);
     g_return_if_fail(map->path);
@@ -65,7 +66,7 @@ void preload_map_free(preload_map_t *map) {
     g_free(map);
 }
 
-static void preload_state_register_map(preload_map_t *map) {
+static void preload_state_register_map(preload_map_t* map) {
     g_return_if_fail(!g_hash_table_lookup(state->maps, map));
 
     map->seq = ++(state->map_seq);
@@ -73,19 +74,20 @@ static void preload_state_register_map(preload_map_t *map) {
     g_ptr_array_add(state->maps_arr, map);
 }
 
-static void preload_state_unregister_map(preload_map_t *map) {
+static void preload_state_unregister_map(preload_map_t* map) {
     g_return_if_fail(g_hash_table_lookup(state->maps, map));
 
     g_ptr_array_remove(state->maps_arr, map);
     g_hash_table_remove(state->maps, map);
 }
 
-void preload_map_ref(preload_map_t *map) {
-    if (!map->refcount) preload_state_register_map(map);
+void preload_map_ref(preload_map_t* map) {
+    if (!map->refcount)
+        preload_state_register_map(map);
     map->refcount++;
 }
 
-void preload_map_unref(preload_map_t *map) {
+void preload_map_unref(preload_map_t* map) {
     g_return_if_fail(map);
     g_return_if_fail(map->refcount > 0);
 
@@ -96,13 +98,13 @@ void preload_map_unref(preload_map_t *map) {
     }
 }
 
-size_t preload_map_get_size(preload_map_t *map) {
+size_t preload_map_get_size(preload_map_t* map) {
     g_return_val_if_fail(map, 0);
 
     return map->length;
 }
 
-guint preload_map_hash(preload_map_t *map) {
+guint preload_map_hash(preload_map_t* map) {
     g_return_val_if_fail(map, 0);
     g_return_val_if_fail(map->path, 0);
 
@@ -111,13 +113,13 @@ guint preload_map_hash(preload_map_t *map) {
            g_direct_hash(GSIZE_TO_POINTER(map->length));
 }
 
-gboolean preload_map_equal(preload_map_t *a, preload_map_t *b) {
+gboolean preload_map_equal(preload_map_t* a, preload_map_t* b) {
     return a->offset == b->offset && a->length == b->length &&
            !strcmp(a->path, b->path);
 }
 
-preload_exemap_t *preload_exemap_new(preload_map_t *map) {
-    preload_exemap_t *exemap;
+preload_exemap_t* preload_exemap_new(preload_map_t* map) {
+    preload_exemap_t* exemap;
 
     g_return_val_if_fail(map, NULL);
 
@@ -128,26 +130,28 @@ preload_exemap_t *preload_exemap_new(preload_map_t *map) {
     return exemap;
 }
 
-void preload_exemap_free(preload_exemap_t *exemap) {
+void preload_exemap_free(preload_exemap_t* exemap) {
     g_return_if_fail(exemap);
 
-    if (exemap->map) preload_map_unref(exemap->map);
+    if (exemap->map)
+        preload_map_unref(exemap->map);
     g_free(exemap);
 }
 
 typedef struct _exemap_foreach_context_t {
-    preload_exe_t *exe;
+    preload_exe_t* exe;
     GHFunc func;
     gpointer data;
 } exemap_foreach_context_t;
 
-static void exe_exemap_callback(preload_exemap_t *exemap,
-                                exemap_foreach_context_t *ctx) {
+static void exe_exemap_callback(preload_exemap_t* exemap,
+                                exemap_foreach_context_t* ctx) {
     ctx->func(exemap, ctx->exe, ctx->data);
 }
 
-static void exe_exemap_foreach(gpointer G_GNUC_UNUSED key, preload_exe_t *exe,
-                               exemap_foreach_context_t *ctx) {
+static void exe_exemap_foreach(gpointer G_GNUC_UNUSED key,
+                               preload_exe_t* exe,
+                               exemap_foreach_context_t* ctx) {
     ctx->exe = exe;
     g_set_foreach(exe->exemaps, (GFunc)exe_exemap_callback, ctx);
 }
@@ -159,9 +163,10 @@ void preload_exemap_foreach(GHFunc func, gpointer user_data) {
     g_hash_table_foreach(state->exes, (GHFunc)exe_exemap_foreach, &ctx);
 }
 
-preload_markov_t *preload_markov_new(preload_exe_t *a, preload_exe_t *b,
+preload_markov_t* preload_markov_new(preload_exe_t* a,
+                                     preload_exe_t* b,
                                      gboolean initialize) {
-    preload_markov_t *markov;
+    preload_markov_t* markov;
 
     g_return_val_if_fail(a, NULL);
     g_return_val_if_fail(b, NULL);
@@ -196,7 +201,7 @@ preload_markov_t *preload_markov_new(preload_exe_t *a, preload_exe_t *b,
     return markov;
 }
 
-void preload_markov_state_changed(preload_markov_t *markov) {
+void preload_markov_state_changed(preload_markov_t* markov) {
     int old_state, new_state;
 
     if (markov->change_timestamp == state->time)
@@ -218,11 +223,11 @@ void preload_markov_state_changed(preload_markov_t *markov) {
     markov->change_timestamp = state->time;
 }
 
-void preload_markov_free(preload_markov_t *markov, preload_exe_t *from) {
+void preload_markov_free(preload_markov_t* markov, preload_exe_t* from) {
     g_return_if_fail(markov);
 
     if (from) {
-        preload_exe_t *other;
+        preload_exe_t* other;
         g_assert(markov->a == from || markov->b == from);
         other = markov_other_exe(markov, from);
         g_set_remove(other->markovs, markov);
@@ -234,19 +239,21 @@ void preload_markov_free(preload_markov_t *markov, preload_exe_t *from) {
 }
 
 typedef struct _markov_foreach_context_t {
-    preload_exe_t *exe;
+    preload_exe_t* exe;
     GFunc func;
     gpointer data;
 } markov_foreach_context_t;
 
-static void exe_markov_callback(preload_markov_t *markov,
-                                markov_foreach_context_t *ctx) {
+static void exe_markov_callback(preload_markov_t* markov,
+                                markov_foreach_context_t* ctx) {
     /* each markov should be processed only once, not twice */
-    if (ctx->exe == markov->a) ctx->func(markov, ctx->data);
+    if (ctx->exe == markov->a)
+        ctx->func(markov, ctx->data);
 }
 
-static void exe_markov_foreach(gpointer G_GNUC_UNUSED key, preload_exe_t *exe,
-                               markov_foreach_context_t *ctx) {
+static void exe_markov_foreach(gpointer G_GNUC_UNUSED key,
+                               preload_exe_t* exe,
+                               markov_foreach_context_t* ctx) {
     ctx->exe = exe;
     g_set_foreach(exe->markovs, (GFunc)exe_markov_callback, ctx);
 }
@@ -293,7 +300,7 @@ void preload_markov_foreach(GFunc func, gpointer user_data) {
  *   E²(A) = E(A)²
  *   (same for B)
  */
-double preload_markov_correlation(preload_markov_t *markov) {
+double preload_markov_correlation(preload_markov_t* markov) {
     double correlation, numerator, denominator2;
     int t, a, b, ab;
 
@@ -314,13 +321,14 @@ double preload_markov_correlation(preload_markov_t *markov) {
     return correlation;
 }
 
-static void exe_add_map_size(preload_exemap_t *exemap, preload_exe_t *exe) {
+static void exe_add_map_size(preload_exemap_t* exemap, preload_exe_t* exe) {
     exe->size += preload_map_get_size(exemap->map);
 }
 
-preload_exe_t *preload_exe_new(const char *path, gboolean running,
-                               GSet *exemaps) {
-    preload_exe_t *exe;
+preload_exe_t* preload_exe_new(const char* path,
+                               gboolean running,
+                               GSet* exemaps) {
+    preload_exe_t* exe;
 
     g_return_val_if_fail(path, NULL);
 
@@ -344,7 +352,7 @@ preload_exe_t *preload_exe_new(const char *path, gboolean running,
     return exe;
 }
 
-void preload_exe_free(preload_exe_t *exe) {
+void preload_exe_free(preload_exe_t* exe) {
     g_return_if_fail(exe);
     g_return_if_fail(exe->path);
 
@@ -359,8 +367,8 @@ void preload_exe_free(preload_exe_t *exe) {
     g_free(exe);
 }
 
-preload_exemap_t *preload_exe_map_new(preload_exe_t *exe, preload_map_t *map) {
-    preload_exemap_t *exemap;
+preload_exemap_t* preload_exe_map_new(preload_exe_t* exe, preload_map_t* map) {
+    preload_exemap_t* exemap;
 
     g_return_val_if_fail(exe, NULL);
     g_return_val_if_fail(map, NULL);
@@ -373,11 +381,13 @@ preload_exemap_t *preload_exe_map_new(preload_exe_t *exe, preload_map_t *map) {
 // key
 static void shift_preload_markov_new(gpointer G_GNUC_UNUSED key,
                                      // value            user_data
-                                     preload_exe_t *a, preload_exe_t *b) {
-    if (a != b) preload_markov_new(a, b, TRUE);
+                                     preload_exe_t* a,
+                                     preload_exe_t* b) {
+    if (a != b)
+        preload_markov_new(a, b, TRUE);
 }
 
-void preload_state_register_exe(preload_exe_t *exe, gboolean create_markovs) {
+void preload_state_register_exe(preload_exe_t* exe, gboolean create_markovs) {
     // XXX: I hope this is not intentional since this shit makes
     // no fucking sense
     g_return_if_fail(!g_hash_table_lookup(state->exes, exe));
@@ -390,7 +400,7 @@ void preload_state_register_exe(preload_exe_t *exe, gboolean create_markovs) {
     g_hash_table_insert(state->exes, exe->path, exe);
 }
 
-void preload_state_unregister_exe(preload_exe_t *exe) {
+void preload_state_unregister_exe(preload_exe_t* exe) {
     g_return_if_fail(g_hash_table_lookup(state->exes, exe));
 
     g_set_foreach(exe->markovs, (GFunc)preload_markov_free, exe);
@@ -413,22 +423,22 @@ void preload_state_unregister_exe(preload_exe_t *exe) {
 #define READ_DUPLICATE_OBJECT_ERROR "duplicate object"
 
 typedef struct _read_context_t {
-    char *line;
-    const char *errmsg;
-    char *path;
-    GHashTable *maps;
-    GHashTable *exes;
+    char* line;
+    const char* errmsg;
+    char* path;
+    GHashTable* maps;
+    GHashTable* exes;
     gpointer data;
-    GError *err;
+    GError* err;
     char filebuf[FILELEN];
 } read_context_t;
 
-static void read_map(read_context_t *rc) {
-    preload_map_t *map;
+static void read_map(read_context_t* rc) {
+    preload_map_t* map;
     int update_time;
     int i, expansion;
     long offset, length;
-    char *path;
+    char* path;
 
     if (6 > sscanf(rc->line, "%d %d %ld %ld %d %" FILELENSTR "s", &i,
                    &update_time, &offset, &length, &expansion, rc->filebuf)) {
@@ -437,7 +447,8 @@ static void read_map(read_context_t *rc) {
     }
 
     path = g_filename_from_uri(rc->filebuf, NULL, &(rc->err));
-    if (!path) return;
+    if (!path)
+        return;
 
     map = preload_map_new(path, offset, length);
     g_free(path);
@@ -459,10 +470,10 @@ err:
     preload_map_free(map);
 }
 
-static void read_badexe(read_context_t *rc) {
+static void read_badexe(read_context_t* rc) {
     int size;
     int expansion;
-    char *path;
+    char* path;
 
     /* we do not read-in badexes.  let's clean them up on every start, give
      * them another chance! */
@@ -475,16 +486,17 @@ static void read_badexe(read_context_t *rc) {
     }
 
     path = g_filename_from_uri(rc->filebuf, NULL, &(rc->err));
-    if (!path) return;
+    if (!path)
+        return;
 
     g_hash_table_insert(state->bad_exes, path, GINT_TO_POINTER(size));
 }
 
-static void read_exe(read_context_t *rc) {
-    preload_exe_t *exe;
+static void read_exe(read_context_t* rc) {
+    preload_exe_t* exe;
     int update_time, time;
     int i, expansion;
-    char *path;
+    char* path;
 
     if (5 > sscanf(rc->line, "%d %d %d %d %" FILELENSTR "s", &i, &update_time,
                    &time, &expansion, rc->filebuf)) {
@@ -493,7 +505,8 @@ static void read_exe(read_context_t *rc) {
     }
 
     path = g_filename_from_uri(rc->filebuf, NULL, &(rc->err));
-    if (!path) return;
+    if (!path)
+        return;
 
     exe = preload_exe_new(path, FALSE, NULL);
     exe->change_timestamp = -1;
@@ -517,11 +530,11 @@ err:
     preload_exe_free(exe);
 }
 
-static void read_exemap(read_context_t *rc) {
+static void read_exemap(read_context_t* rc) {
     int iexe, imap;
-    preload_exe_t *exe;
-    preload_map_t *map;
-    preload_exemap_t *exemap;
+    preload_exe_t* exe;
+    preload_map_t* map;
+    preload_exemap_t* exemap;
     double prob;
 
     if (3 > sscanf(rc->line, "%d %d %lg", &iexe, &imap, &prob)) {
@@ -540,11 +553,11 @@ static void read_exemap(read_context_t *rc) {
     exemap->prob = prob;
 }
 
-static void read_markov(read_context_t *rc) {
+static void read_markov(read_context_t* rc) {
     int time, state, state_new;
     int ia, ib;
     preload_exe_t *a, *b;
-    preload_markov_t *markov;
+    preload_markov_t* markov;
     int n;
 
     n = 0;
@@ -589,8 +602,9 @@ static void read_markov(read_context_t *rc) {
 }
 
 static void set_running_process_callback(pid_t G_GNUC_UNUSED pid,
-                                         const char *path, int time) {
-    preload_exe_t *exe;
+                                         const char* path,
+                                         int time) {
+    preload_exe_t* exe;
 
     exe = g_hash_table_lookup(state->exes, path);
     if (exe) {
@@ -599,17 +613,17 @@ static void set_running_process_callback(pid_t G_GNUC_UNUSED pid,
     }
 }
 
-static void set_markov_state_callback(preload_markov_t *markov) {
+static void set_markov_state_callback(preload_markov_t* markov) {
     markov->state = markov_state(markov);
 }
 
 // NOTE: state set here (probably)
-static char *read_state(GIOChannel *f) {
+static char* read_state(GIOChannel* f) {
     int lineno;
-    GString *linebuf;
+    GString* linebuf;
     GIOStatus s;
     char tag[32] = "";
-    char *errmsg;
+    char* errmsg;
 
     read_context_t rc;
 
@@ -624,8 +638,10 @@ static char *read_state(GIOChannel *f) {
 
     while (!rc.err && !rc.errmsg) {
         s = g_io_channel_read_line_string(f, linebuf, NULL, &rc.err);
-        if (s == G_IO_STATUS_AGAIN) continue;
-        if (s == G_IO_STATUS_EOF || s == G_IO_STATUS_ERROR) break;
+        if (s == G_IO_STATUS_AGAIN)
+            continue;
+        if (s == G_IO_STATUS_EOF || s == G_IO_STATUS_ERROR)
+            break;
 
         lineno++;
         rc.line = linebuf->str;
@@ -643,7 +659,7 @@ static char *read_state(GIOChannel *f) {
 
         if (!strcmp(tag, TAG_PRELOAD)) {
             int major_ver_read, major_ver_run;
-            const char *version;
+            const char* version;
             int time;
 
             if (lineno != 1 || 2 > sscanf(rc.line, "%d.%*[^\t]\t%d",
@@ -689,12 +705,14 @@ static char *read_state(GIOChannel *f) {
     g_hash_table_destroy(rc.exes);
     g_hash_table_destroy(rc.maps);
 
-    if (rc.err) rc.errmsg = rc.err->message;
+    if (rc.err)
+        rc.errmsg = rc.err->message;
     if (rc.errmsg)
         errmsg = g_strdup_printf("line %d: %s", lineno, rc.errmsg);
     else
         errmsg = NULL;
-    if (rc.err) g_error_free(rc.err);
+    if (rc.err)
+        g_error_free(rc.err);
 
     if (!errmsg) {
         proc_foreach((GHFunc)G_CALLBACK(set_running_process_callback),
@@ -708,7 +726,7 @@ static char *read_state(GIOChannel *f) {
 }
 
 // NOTE: State set here too
-void preload_state_load(const char *statefile) {
+void preload_state_load(const char* statefile) {
     memset(state, 0, sizeof(*state));
     state->exes = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
                                         (GDestroyNotify)preload_exe_free);
@@ -719,8 +737,8 @@ void preload_state_load(const char *statefile) {
     state->maps_arr = g_ptr_array_new();
 
     if (statefile && *statefile) {
-        GIOChannel *f;
-        GError *err = NULL;
+        GIOChannel* f;
+        GError* err = NULL;
 
         g_message("loading state from %s", statefile);
 
@@ -735,7 +753,7 @@ void preload_state_load(const char *statefile) {
                 g_error_free(err);
             }
         } else {
-            char *errmsg;
+            char* errmsg;
 
             errmsg = read_state(f);
             g_io_channel_unref(f);
@@ -761,24 +779,26 @@ void preload_state_load(const char *statefile) {
 #define write_ln() write_it("\n")
 
 typedef struct _write_context_t {
-    GIOChannel *f;
-    GString *line;
-    GError *err;
+    GIOChannel* f;
+    GString* line;
+    GError* err;
 } write_context_t;
 
-static void write_header(write_context_t *wc) {
+static void write_header(write_context_t* wc) {
     write_tag(TAG_PRELOAD);
     g_string_printf(wc->line, "%s\t%d", PACKAGE_VERSION, state->time);
     write_string(wc->line);
     write_ln();
 }
 
-static void write_map(preload_map_t *map, gpointer G_GNUC_UNUSED data,
-                      write_context_t *wc) {
-    char *uri;
+static void write_map(preload_map_t* map,
+                      gpointer G_GNUC_UNUSED data,
+                      write_context_t* wc) {
+    char* uri;
 
     uri = g_filename_to_uri(map->path, NULL, &(wc->err));
-    if (!uri) return;
+    if (!uri)
+        return;
 
     write_tag(TAG_MAP);
     g_string_printf(wc->line, "%d\t%d\t%lu\t%lu\t%d\t%s", map->seq,
@@ -792,11 +812,12 @@ static void write_map(preload_map_t *map, gpointer G_GNUC_UNUSED data,
     g_free(uri);
 }
 
-static void write_badexe(char *path, int update_time, write_context_t *wc) {
-    char *uri;
+static void write_badexe(char* path, int update_time, write_context_t* wc) {
+    char* uri;
 
     uri = g_filename_to_uri(path, NULL, &(wc->err));
-    if (!uri) return;
+    if (!uri)
+        return;
 
     write_tag(TAG_BADEXE);
     g_string_printf(wc->line, "%d\t%d\t%s", update_time, -1 /*expansion*/,
@@ -807,12 +828,14 @@ static void write_badexe(char *path, int update_time, write_context_t *wc) {
     g_free(uri);
 }
 
-static void write_exe(gpointer G_GNUC_UNUSED key, preload_exe_t *exe,
-                      write_context_t *wc) {
-    char *uri;
+static void write_exe(gpointer G_GNUC_UNUSED key,
+                      preload_exe_t* exe,
+                      write_context_t* wc) {
+    char* uri;
 
     uri = g_filename_to_uri(exe->path, NULL, &(wc->err));
-    if (!uri) return;
+    if (!uri)
+        return;
 
     // NOTE: implicitly uses `write_context_t* wc`! Why would you do that FFS!
     write_tag(TAG_EXE);
@@ -824,8 +847,9 @@ static void write_exe(gpointer G_GNUC_UNUSED key, preload_exe_t *exe,
     g_free(uri);
 }
 
-static void write_exemap(preload_exemap_t *exemap, preload_exe_t *exe,
-                         write_context_t *wc) {
+static void write_exemap(preload_exemap_t* exemap,
+                         preload_exe_t* exe,
+                         write_context_t* wc) {
     write_tag(TAG_EXEMAP);
     g_string_printf(wc->line, "%d\t%d\t%lg", exe->seq, exemap->map->seq,
                     exemap->prob);
@@ -833,7 +857,7 @@ static void write_exemap(preload_exemap_t *exemap, preload_exe_t *exe,
     write_ln();
 }
 
-static void write_markov(preload_markov_t *markov, write_context_t *wc) {
+static void write_markov(preload_markov_t* markov, write_context_t* wc) {
     int state, state_new;
 
     write_tag(TAG_MARKOV);
@@ -856,7 +880,7 @@ static void write_markov(preload_markov_t *markov, write_context_t *wc) {
     write_ln();
 }
 
-static char *write_state(GIOChannel *f) {
+static char* write_state(GIOChannel* f) {
     write_context_t wc;
 
     wc.f = f;
@@ -865,7 +889,8 @@ static char *write_state(GIOChannel *f) {
 
     write_header(&wc);
     // NOTE: value not used
-    if (!wc.err) g_hash_table_foreach(state->maps, (GHFunc)write_map, &wc);
+    if (!wc.err)
+        g_hash_table_foreach(state->maps, (GHFunc)write_map, &wc);
 
     // NOTE: Both k, v used
     if (!wc.err)
@@ -873,13 +898,16 @@ static char *write_state(GIOChannel *f) {
                              &wc);
 
     // NOTE: value used; key unused
-    if (!wc.err) g_hash_table_foreach(state->exes, (GHFunc)write_exe, &wc);
-    if (!wc.err) preload_exemap_foreach((GHFunc)write_exemap, &wc);
-    if (!wc.err) preload_markov_foreach((GFunc)write_markov, &wc);
+    if (!wc.err)
+        g_hash_table_foreach(state->exes, (GHFunc)write_exe, &wc);
+    if (!wc.err)
+        preload_exemap_foreach((GHFunc)write_exemap, &wc);
+    if (!wc.err)
+        preload_markov_foreach((GFunc)write_markov, &wc);
 
     g_string_free(wc.line, TRUE);
     if (wc.err) {
-        char *tmp;
+        char* tmp;
         tmp = g_strdup(wc.err->message);
         g_error_free(wc.err);
         return tmp;
@@ -887,13 +915,15 @@ static char *write_state(GIOChannel *f) {
         return NULL;
 }
 
-static gboolean true_func(void) { return TRUE; }
+static gboolean true_func(void) {
+    return TRUE;
+}
 
-void preload_state_save(const char *statefile) {
+void preload_state_save(const char* statefile) {
     if (state->dirty && statefile && *statefile) {
         int fd;
-        GIOChannel *f;
-        char *tmpfile;
+        GIOChannel* f;
+        char* tmpfile;
 
         g_message("saving state to %s", statefile);
 
@@ -905,7 +935,7 @@ void preload_state_save(const char *statefile) {
             g_critical("cannot open %s for writing, ignoring: %s", tmpfile,
                        strerror(errno));
         } else {
-            char *errmsg;
+            char* errmsg;
 
             f = g_io_channel_unix_new(fd);
 
@@ -995,7 +1025,8 @@ static gboolean preload_state_tick(gpointer data) {
     if (conf->system.doscan) {
         g_debug("state scanning begin");
         preload_spy_scan(data);
-        if (preload_is_debugging()) preload_state_dump_log();
+        if (preload_is_debugging())
+            preload_state_dump_log();
         state->dirty = state->model_dirty = TRUE;
         g_debug("state scanning end");
     }
@@ -1011,7 +1042,7 @@ static gboolean preload_state_tick(gpointer data) {
     return FALSE;
 }
 
-static const char *autosave_statefile;
+static const char* autosave_statefile;
 
 static gboolean preload_state_autosave(void) {
     preload_state_save(autosave_statefile);
@@ -1022,7 +1053,7 @@ static gboolean preload_state_autosave(void) {
     return FALSE;
 }
 
-void preload_state_run(const char *statefile) {
+void preload_state_run(const char* statefile) {
     g_timeout_add(0, preload_state_tick, NULL);
     if (statefile) {
         autosave_statefile = statefile;

@@ -27,14 +27,14 @@
 #include "proc.h"
 #include "state.h"
 
-static GSList *state_changed_exes;
-static GSList *new_running_exes;
-static GHashTable *new_exes;
+static GSList* state_changed_exes;
+static GSList* new_running_exes;
+static GHashTable* new_exes;
 
 /* for every process, check whether we know what it is, and add it
  * to appropriate list for further analysis. */
-static void running_process_callback(pid_t pid, const char *path) {
-    preload_exe_t *exe;
+static void running_process_callback(pid_t pid, const char* path) {
+    preload_exe_t* exe;
 
     g_return_if_fail(path);
 
@@ -58,7 +58,7 @@ static void running_process_callback(pid_t pid, const char *path) {
 
 /* for every exe that has been running, check whether it's still running
  * and take proper action. */
-static void already_running_exe_callback(preload_exe_t *exe) {
+static void already_running_exe_callback(preload_exe_t* exe) {
     if (exe_is_running(exe))
         new_running_exes = g_slist_prepend(new_running_exes, exe);
     else
@@ -67,7 +67,7 @@ static void already_running_exe_callback(preload_exe_t *exe) {
 
 /* there is an exe we've never seen before.  check if it's a piggy one or
  * not.  if yes, add it to the our farm, add it to the blacklist otherwise. */
-static void new_exe_callback(char *path, pid_t pid) {
+static void new_exe_callback(char* path, pid_t pid) {
     gboolean want_it;
     size_t size;
 
@@ -79,8 +79,8 @@ static void new_exe_callback(char *path, pid_t pid) {
     want_it = size >= (size_t)conf->model.minsize;
 
     if (want_it) {
-        preload_exe_t *exe;
-        GSet *exemaps;
+        preload_exe_t* exe;
+        GSet* exemaps;
 
         size = proc_get_maps(pid, state->maps, &exemaps);
         if (!size) {
@@ -100,17 +100,20 @@ static void new_exe_callback(char *path, pid_t pid) {
     }
 }
 
-static void running_markov_inc_time(preload_markov_t *markov, int time) {
-    if (markov->state == 3) markov->time += time;
+static void running_markov_inc_time(preload_markov_t* markov, int time) {
+    if (markov->state == 3)
+        markov->time += time;
 }
 
 static void running_exe_inc_time(gpointer G_GNUC_UNUSED key,
-                                 preload_exe_t *exe, int time) {
-    if (exe_is_running(exe)) exe->time += time;
+                                 preload_exe_t* exe,
+                                 int time) {
+    if (exe_is_running(exe))
+        exe->time += time;
 }
 
 /* adjust states on exes that change state (running/not-running) */
-static void exe_changed_callback(preload_exe_t *exe) {
+static void exe_changed_callback(preload_exe_t* exe) {
     exe->change_timestamp = state->time;
     g_set_foreach(exe->markovs,
                   (GFunc)G_CALLBACK(preload_markov_state_changed), NULL);

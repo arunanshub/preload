@@ -47,8 +47,10 @@
  *   lnprob(Y) = log(P(Y=0)) = Σ log(P(Y=0|Xi)) = Σ log(1 - P(Y=1|Xi))
  *
  */
-static void markov_bid_for_exe(preload_markov_t *markov, preload_exe_t *y,
-                               int ystate, double correlation) {
+static void markov_bid_for_exe(preload_markov_t* markov,
+                               preload_exe_t* y,
+                               int ystate,
+                               double correlation) {
     int state;
     double p_state_change;
     double p_y_runs_next;
@@ -86,10 +88,11 @@ static void markov_bid_for_exe(preload_markov_t *markov, preload_exe_t *y,
     y->lnprob += log(1 - p_runs);
 }
 
-static void markov_bid_in_exes(preload_markov_t *markov) {
+static void markov_bid_in_exes(preload_markov_t* markov) {
     double correlation;
 
-    if (!markov->weight[markov->state][markov->state]) return;
+    if (!markov->weight[markov->state][markov->state])
+        return;
 
     correlation =
         conf->model.usecorrelation ? preload_markov_correlation(markov) : 1.0;
@@ -100,16 +103,18 @@ static void markov_bid_in_exes(preload_markov_t *markov) {
         markov_bid_for_exe(markov, markov->b, 2, correlation);
 }
 
-static void map_zero_prob(preload_map_t *map) { map->lnprob = 0; }
+static void map_zero_prob(preload_map_t* map) {
+    map->lnprob = 0;
+}
 
 // NOTE: So basically this is a three way comparison (or `<=>`)
-static int map_prob_compare(const preload_map_t **pa,
-                            const preload_map_t **pb) {
+static int map_prob_compare(const preload_map_t** pa,
+                            const preload_map_t** pb) {
     const preload_map_t *a = *pa, *b = *pb;
     return a->lnprob < b->lnprob ? -1 : a->lnprob > b->lnprob ? 1 : 0;
 }
 
-static void exe_zero_prob(gpointer G_GNUC_UNUSED key, preload_exe_t *exe) {
+static void exe_zero_prob(gpointer G_GNUC_UNUSED key, preload_exe_t* exe) {
     exe->lnprob = 0;
 }
 
@@ -128,7 +133,7 @@ static void exe_zero_prob(gpointer G_GNUC_UNUSED key, preload_exe_t *exe) {
  *   lnprob(M) = log(P(M=0)) = Σ log(P(M=0|Xi)) = Σ log(P(Xi=0)) = Σ lnprob(Xi)
  *
  */
-static void exemap_bid_in_maps(preload_exemap_t *exemap, preload_exe_t *exe) {
+static void exemap_bid_in_maps(preload_exemap_t* exemap, preload_exe_t* exe) {
     if (exe_is_running(exe)) {
         /* if exe is running, we vote against the map,
          * since it's most prolly in the memory already. */
@@ -140,15 +145,15 @@ static void exemap_bid_in_maps(preload_exemap_t *exemap, preload_exe_t *exe) {
 }
 
 static void exe_prob_print(gpointer G_GNUC_UNUSED key,
-                           preload_exe_t *exe) G_GNUC_UNUSED;
-static void exe_prob_print(gpointer G_GNUC_UNUSED key, preload_exe_t *exe) {
+                           preload_exe_t* exe) G_GNUC_UNUSED;
+static void exe_prob_print(gpointer G_GNUC_UNUSED key, preload_exe_t* exe) {
     if (!exe_is_running(exe))
         fprintf(stderr, "ln(prob(~EXE)) = \t%13.10lf\t%s\n", exe->lnprob,
                 exe->path);
 }
 
-static void map_prob_print(preload_map_t *map) G_GNUC_UNUSED;
-static void map_prob_print(preload_map_t *map) {
+static void map_prob_print(preload_map_t* map) G_GNUC_UNUSED;
+static void map_prob_print(preload_map_t* map) {
     fprintf(stderr, "ln(prob(~MAP)) = \t%13.10lf\t%s\n", map->lnprob,
             map->path);
 }
@@ -159,11 +164,11 @@ static void map_prob_print(preload_map_t *map) {
 
 /* input is the list of maps sorted on the need.
  * decide a cutoff based on memory conditions and readhead. */
-void preload_prophet_readahead(GPtrArray *maps_arr) {
+void preload_prophet_readahead(GPtrArray* maps_arr) {
     int i;
     int memavail, memavailtotal; /* in kilobytes */
     preload_memory_t memstat;
-    preload_map_t *map;
+    preload_map_t* map;
 
     proc_get_memstat(&memstat);
 
@@ -186,14 +191,15 @@ void preload_prophet_readahead(GPtrArray *maps_arr) {
 
         memavail -= kb(map->length);
 
-        if (preload_log_level >= 10) map_prob_print(map);
+        if (preload_log_level >= 10)
+            map_prob_print(map);
     }
 
     g_debug("%dkb available for preloading, using %dkb of it", memavailtotal,
             memavailtotal - memavail);
 
     if (i) {
-        i = preload_readahead((preload_map_t **)maps_arr->pdata, i);
+        i = preload_readahead((preload_map_t**)maps_arr->pdata, i);
         g_debug("readahead %d files", i);
     } else {
         g_debug("nothing to readahead");

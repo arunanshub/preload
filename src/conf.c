@@ -31,7 +31,7 @@
 
 preload_conf_t conf[1];
 
-static void set_default_conf(preload_conf_t *conf) {
+static void set_default_conf(preload_conf_t* conf) {
 #define true TRUE
 #define false FALSE
 #define default_integer(def, unit) (unit * def)
@@ -44,9 +44,9 @@ static void set_default_conf(preload_conf_t *conf) {
 #undef confkey
 }
 
-void preload_conf_load(const char *conffile, gboolean fail) {
-    GKeyFile *f;
-    GError *e = NULL;
+void preload_conf_load(const char* conffile, gboolean fail) {
+    GKeyFile* f;
+    GError* e = NULL;
     preload_conf_t newconf;
     GLogLevelFlags flags = fail ? G_LOG_LEVEL_ERROR : G_LOG_LEVEL_CRITICAL;
 
@@ -96,9 +96,9 @@ void preload_conf_load(const char *conffile, gboolean fail) {
 }
 
 void preload_conf_dump_log(void) {
-    const char *curgrp = "";
+    const char* curgrp = "";
     time_t curtime;
-    char *timestr;
+    char* timestr;
 
     g_message("conf log dump requested");
     curtime = time(NULL);
@@ -109,12 +109,14 @@ void preload_conf_dump_log(void) {
 #define print_enum(v, unit) fprintf(stderr, "%d", v);
 #define print_boolean(v, unit) fprintf(stderr, "%s", v ? "true" : "false");
 #define print_string(v, unit) fprintf(stderr, "%s", v);
-#define print_string_list(v, unit)                    \
-    G_STMT_START {                                    \
-        char **p = v;                                 \
-        if (p) fprintf(stderr, "%s", *p++);           \
-        while (p && *p) fprintf(stderr, ";%s", *p++); \
-    }                                                 \
+#define print_string_list(v, unit)        \
+    G_STMT_START {                        \
+        char** p = v;                     \
+        if (p)                            \
+            fprintf(stderr, "%s", *p++);  \
+        while (p && *p)                   \
+            fprintf(stderr, ";%s", *p++); \
+    }                                     \
     G_STMT_END
 #define confkey(grp, type, key, def, unit)                  \
     if (strcmp(STRINGIZE(grp), curgrp))                     \

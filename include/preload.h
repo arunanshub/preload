@@ -9,9 +9,9 @@
 #define DEFAULT_LOGLEVEL 4
 #define DEFAULT_NICELEVEL 15
 
-extern const char *conffile;
-extern const char *statefile;
-extern const char *logfile;
+extern const char* conffile;
+extern const char* statefile;
+extern const char* logfile;
 extern int foreground;
 extern int nicelevel;
 

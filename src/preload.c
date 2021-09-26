@@ -35,15 +35,15 @@
 
 /* variables */
 
-const char *conffile = DEFAULT_CONFFILE;
-const char *statefile = DEFAULT_STATEFILE;
-const char *logfile = DEFAULT_LOGFILE;
+const char* conffile = DEFAULT_CONFFILE;
+const char* statefile = DEFAULT_STATEFILE;
+const char* logfile = DEFAULT_LOGFILE;
 int nicelevel = DEFAULT_NICELEVEL;
 int foreground = 0;
 
 /* local variables */
 
-static GMainLoop *main_loop;
+static GMainLoop* main_loop;
 
 /* Functions */
 
@@ -114,14 +114,16 @@ static void set_sig_handlers(void) {
     signal(SIGPIPE, SIG_IGN);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     /* initialize */
     preload_cmdline_parse(&argc, &argv);
     preload_log_init(logfile);
     preload_conf_load(conffile, TRUE);
     set_sig_handlers();
-    if (!foreground) daemonize();
-    if (0 > nice(nicelevel)) g_warning("%s", strerror(errno));
+    if (!foreground)
+        daemonize();
+    if (0 > nice(nicelevel))
+        g_warning("%s", strerror(errno));
     g_debug("starting up");
     preload_state_load(statefile);
 
@@ -132,7 +134,8 @@ int main(int argc, char **argv) {
 
     /* clean up */
     preload_state_save(statefile);
-    if (preload_is_debugging()) preload_state_free();
+    if (preload_is_debugging())
+        preload_state_free();
     g_debug("exiting");
     return EXIT_SUCCESS;
 }
