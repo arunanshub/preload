@@ -1,3 +1,9 @@
+## 0.1.4 (2021-10-05)
+
+### Refactor
+
+- **common**: remove check for stringize as it is done in the build script
+
 ## 0.1.3 (2021-09-25)
 
 ### Refactor

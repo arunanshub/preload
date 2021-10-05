@@ -549,6 +549,7 @@ static void read_exemap(read_context_t* rc) {
         return;
     }
 
+    // you could have just passed the prob as a param FFS!
     exemap = preload_exe_map_new(exe, map);
     exemap->prob = prob;
 }
@@ -638,6 +639,7 @@ static char* read_state(GIOChannel* f) {
 
     while (!rc.err && !rc.errmsg) {
         s = g_io_channel_read_line_string(f, linebuf, NULL, &rc.err);
+        // temporarily unavailable, retry please!
         if (s == G_IO_STATUS_AGAIN)
             continue;
         if (s == G_IO_STATUS_EOF || s == G_IO_STATUS_ERROR)
@@ -646,12 +648,15 @@ static char* read_state(GIOChannel* f) {
         lineno++;
         rc.line = linebuf->str;
 
+        // get the tag
         if (1 > sscanf(rc.line, "%31s", tag)) {
             rc.errmsg = READ_TAG_ERROR;
             break;
         }
+        // TODO: what does this do?
         rc.line += strlen(tag);
 
+        // verify the tag
         if (lineno == 1 && strcmp(tag, TAG_PRELOAD)) {
             g_warning("State file has invalid header, ignoring it");
             break;
@@ -662,12 +667,14 @@ static char* read_state(GIOChannel* f) {
             const char* version;
             int time;
 
+            // we read the last_accounting_timestamp here
             if (lineno != 1 || 2 > sscanf(rc.line, "%d.%*[^\t]\t%d",
                                           &major_ver_read, &time)) {
                 rc.errmsg = READ_SYNTAX_ERROR;
                 break;
             }
 
+            // version check
             version = PACKAGE_VERSION;
             major_ver_run = strtod(version, NULL);
 
@@ -684,6 +691,8 @@ static char* read_state(GIOChannel* f) {
                 break;
             }
 
+            // state.time also becomes last_accounting_timestamp, deriving from
+            // time
             state->last_accounting_timestamp = state->time = time;
         } else if (!strcmp(tag, TAG_MAP))
             read_map(&rc);

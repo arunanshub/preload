@@ -1,6 +1,6 @@
 # vim:set et sw=2 ts=4 tw=80 fdm=marker:
 project('preload', 'c',
-  version : '0.1.3',
+  version : '0.1.4',
   meson_version : '>=0.59.1',
   license : 'GPL-2.0-only',
   default_options : ['warning_level=3'],

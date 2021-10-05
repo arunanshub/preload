@@ -92,6 +92,8 @@ static void new_exe_callback(char* path, pid_t pid) {
         }
 
         exe = preload_exe_new(path, TRUE, exemaps);
+        // NOTE: This wants to create markovs; then the markov should be
+        // returned
         preload_state_register_exe(exe, TRUE);
         state->running_exes = g_slist_prepend(state->running_exes, exe);
     } else {
