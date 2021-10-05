@@ -1,7 +1,40 @@
 # vim:set et sw=2 ts=4 tw=80 fdm=marker:
 project('preload', 'c',
   version : '0.1.3',
-  default_options : ['warning_level=3'])
+  meson_version : '>=0.59.1',
+  license : 'GPL-2.0-only',
+  default_options : ['warning_level=3'],
+)
+
+cc = meson.get_compiler('c')
+
+# Stringize check {{{1 #
+if not cc.compiles('#define FOO(x) #x', name : 'stringize check')
+  error('stringizing not supported by this compiler')
+endif
+# 1}}} #
+
+# project arguments {{{1 #
+macros = [
+  '-D_GNU_SOURCE',
+  '-DHAVE_CONFIG_H',
+]
+
+if cc.has_header('sys/stat.h')
+  macros += '-DHAVE_SYS_STAT_H'
+else
+  error('"sys/stat.h" is absent')
+endif
+
+if cc.has_header('sys/types.h')
+  macros += '-DHAVE_SYS_TYPES_H'
+endif
+
+add_project_arguments(
+  macros,
+  language: 'c',
+)
+# 1}}} #
 
 # configuration data {{{1 #
 PACKAGE_STRING = '"@0@ @1@"'.format(
@@ -25,21 +58,6 @@ configure_file(
   configuration : conf_data,
 )
 # 1}}} #
-
-# project arguments {{{1 #
-add_project_arguments(
-  [
-    '-D_GNU_SOURCE',
-    '-DHAVE_STRINGIZE',
-    '-DHAVE_SYS_STAT_H',
-    '-DHAVE_SYS_TYPES_H',
-    '-DHAVE_CONFIG_H',
-  ],
-  language: 'c',
-)
-# 1}}} #
-
-cc = meson.get_compiler('c')
 
 dependencies = [
   dependency('glib-2.0'),
