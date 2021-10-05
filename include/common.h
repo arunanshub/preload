@@ -23,12 +23,7 @@
 #include <glib-object.h>
 #include <glib.h>
 
-#ifdef HAVE_STRINGIZE
 #define STRINGIZE2(x) #x
-#else
-#define STRINGIZE2(x) "?"
-#error Your C preprocessor does not support stringize operator.
-#endif
 #define STRINGIZE(x) STRINGIZE2(x)
 
 #if 0
