@@ -26,9 +26,11 @@ else
   error('"sys/stat.h" is absent')
 endif
 
-if cc.has_header('sys/types.h')
-  macros += '-DHAVE_SYS_TYPES_H'
-endif
+foreach header : ['sys/types.h', 'linux/fs.h']
+  if cc.has_header(header)
+    macros += '-DHAVE_' + header.to_upper().underscorify()
+  endif
+endforeach
 
 add_project_arguments(
   macros,
