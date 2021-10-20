@@ -10,9 +10,9 @@
 # and stability.
 #
 # unit: unit_cycle
-# default: default_cycle
+# default: @DEFAULT_CYCLE@
 #
-cycle = default_cycle
+cycle = @DEFAULT_CYCLE@
 
 # usecorrelation:
 #
@@ -21,8 +21,8 @@ cycle = default_cycle
 # Currently it's believed that using it results in more accurate
 # prediction.  The option may be removed in the future.
 #
-# default: default_usecorrelation
-usecorrelation = default_usecorrelation
+# default: @DEFAULT_USECORRELATION@
+usecorrelation = @DEFAULT_USECORRELATION@
 
 # minsize:
 #
@@ -34,9 +34,9 @@ usecorrelation = default_usecorrelation
 # quadratically more resources, as it tracks more processes.
 #
 # unit: unit_minsize
-# default: default_minsize
+# default: @DEFAULT_MINSIZE@
 #
-minsize = default_minsize
+minsize = @DEFAULT_MINSIZE@
 
 #
 # The following control how much memory preload is allowed to use
@@ -46,7 +46,7 @@ minsize = default_minsize
 # The total memory preload uses for prefetching is then computed using
 # the following formulae:
 #
-# 	max (0, TOTAL * memtotal + FREE * memfree) + CACHED * memcached
+#     max (0, TOTAL * memtotal + FREE * memfree) + CACHED * memcached
 # where TOTAL, FREE, and CACHED are the respective values read at
 # runtime from /proc/meminfo.
 #
@@ -54,23 +54,23 @@ minsize = default_minsize
 # memtotal: precentage of total memory
 #
 # unit: unit_memtotal
-# default: default_memtotal
+# default: @DEFAULT_MEMTOTAL@
 #
-memtotal = default_memtotal
+memtotal = @DEFAULT_MEMTOTAL@
 
 # memfree: precentage of free memory
 #
 # unit: unit_memfree
-# default: default_memfree
+# default: @DEFAULT_MEMFREE@
 #
-memfree = default_memfree
+memfree = @DEFAULT_MEMFREE@
 
 # memcached: precentage of cached memory
 #
 # unit: unit_memcached
-# default: default_memcached
+# default: @DEFAULT_MEMCACHED@
 #
-memcached = default_memcached
+memcached = @DEFAULT_MEMCACHED@
 
 
 ###########################################################################
@@ -87,8 +87,8 @@ memcached = default_memcached
 # have been running when preload started and the list of running
 # processes is not updated at all.
 #
-# default: default_doscan
-doscan = default_doscan
+# default: @DEFAULT_DOSCAN@
+doscan = @DEFAULT_DOSCAN@
 
 # dopredict:
 #
@@ -99,8 +99,8 @@ doscan = default_doscan
 # this allows you to turn scan/predict or or off on the fly, by
 # modifying the config file and signalling the daemon.
 #
-# default: default_dopredict
-dopredict = default_dopredict
+# default: @DEFAULT_DOPREDICT@
+dopredict = @DEFAULT_DOPREDICT@
 
 # autosave:
 #
@@ -111,9 +111,9 @@ dopredict = default_dopredict
 # turning off autosave completely is not advised.
 #
 # unit: unit_autosave
-# default: default_autosave
+# default: @DEFAULT_AUTOSAVE@
 #
-autosave = default_autosave
+autosave = @DEFAULT_AUTOSAVE@
 
 # mapprefix:
 #
@@ -155,22 +155,22 @@ exeprefix = !/usr/sbin/;!/usr/local/sbin/;/usr/;!/
 # performance as it allows the kernel to batch several I/O requests
 # of nearby blocks.
 #
-# default: default_maxprocs
-processes = default_maxprocs
+# default: @DEFAULT_MAXPROCS@
+processes = @DEFAULT_MAXPROCS@
 
 # sortstrategy
 #
 # The I/O sorting strategy.  Ideally this should be automatically
 # decided, but it's not currently.  One of:
 #
-#   0 -- SORT_NONE:	No I/O sorting.
-#			Useful on Flash memory for example.
-#   1 -- SORT_PATH:	Sort based on file path only.
-#			Useful for network filesystems.
-#   2 -- SORT_INODE:	Sort based on inode number.
-#			Does less house-keeping I/O than the next option.
-#   3 -- SORT_BLOCK:	Sort I/O based on disk block.  Most sophisticated.
-#			And useful for most Linux filesystems.
+#   0 -- SORT_NONE:    No I/O sorting.
+#            Useful on Flash memory for example.
+#   1 -- SORT_PATH:    Sort based on file path only.
+#            Useful for network filesystems.
+#   2 -- SORT_INODE:    Sort based on inode number.
+#            Does less house-keeping I/O than the next option.
+#   3 -- SORT_BLOCK:    Sort I/O based on disk block.  Most sophisticated.
+#            And useful for most Linux filesystems.
 #
-# default: default_sortstrategy
-sortstrategy = default_sortstrategy
+# default: @DEFAULT_SORTSTRATEGY@
+sortstrategy = @DEFAULT_SORTSTRATEGY@

@@ -38,7 +38,7 @@ add_project_arguments(
 )
 # 1}}} #
 
-# configuration data {{{1 #
+# config.h data {{{1 #
 PACKAGE_STRING = '"@0@ @1@"'.format(
   meson.project_name(),
   meson.project_version()
@@ -61,6 +61,30 @@ configure_file(
 )
 # 1}}} #
 
+# preload.conf data {{{1 #
+conf_data = configuration_data({
+  'DEFAULT_CYCLE': 1,
+  'DEFAULT_USECORRELATION' : 'true',
+  'DEFAULT_MINSIZE': 2000000,
+  'DEFAULT_MEMTOTAL' : -10,
+  'DEFAULT_MEMFREE' : 50,
+  'DEFAULT_MEMCACHED' : 0,
+  'DEFAULT_DOSCAN' : 'true',
+  'DEFAULT_DOPREDICT' : 'true',
+  'DEFAULT_AUTOSAVE' : 3600,
+  'DEFAULT_MAXPROCS' : 30,
+  'DEFAULT_SORTSTRATEGY' : 3,
+})
+
+configure_file(
+  output : 'preload.conf',
+  input : 'preload.conf.in',
+  configuration : conf_data,
+  install : true,
+  install_dir : get_option('sysconfdir'),
+)
+# 1}}} #
+
 dependencies = [
   dependency('glib-2.0'),
   cc.find_library('m', required : false), # add math library
@@ -69,10 +93,20 @@ dependencies = [
 include = include_directories('include')
 subdir('src')
 
-executable(
+exe = executable(
   'preload',
   src,
   include_directories : include,
   dependencies : dependencies,
   install : true,
 )
+#
+# test('preload with debug config', exe, args : [
+#   '-c preload.conf -s \'\' -d',
+#   ],
+# )
+#
+# test('preload with normal config', exe, args : [
+#   '-c preload.conf -s \'\' -l \'\' -f',
+#   ],
+# )
