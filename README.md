@@ -9,14 +9,8 @@ as its build system.
 Note that this is a work in progress. So, if you're going to use it, make sure
 that you check [`meson.build`](/meson.build) first.
 
-Configuration file for `preload` can be generated via:
-
-```sh
-./gen.preload.conf.sh preload.conf.in ./include/confkeys.h
-```
-
-Although there are better ways to do this, I'll simply leave it like this for
-now.
+Configuration file for `preload` is generated from buildfile (`meson.build`)
+itself.
 
 ## Why `meson`?
 
