@@ -3,7 +3,7 @@ project('preload', 'c',
   version : '0.1.4',
   meson_version : '>=0.59.1',
   license : 'GPL-2.0-only',
-  default_options : ['warning_level=3'],
+  default_options : ['warning_level=3', 'buildtype=debugoptimized'],
 )
 
 cc = meson.get_compiler('c')
@@ -44,20 +44,23 @@ PACKAGE_STRING = '"@0@ @1@"'.format(
   meson.project_version()
 )
 
-conf_data = configuration_data({
-  'PACKAGE'           : '"@0@"'.format(meson.project_name()),
-  'LOGDIR'            : '"/var/log"',
-  'SYSCONFDIR'        : '"/etc"',
-  'PKGLOCALSTATEDIR'  : '"/var/lib"',
-  'PACKAGE_VERSION'   : '"@0@"'.format(meson.project_version()),
-  'PACKAGE_STRING'    : PACKAGE_STRING,
-  'PACKAGE_NAME'      : '"preload"',
-  'PACKAGE_BUGREPORT' : '"https://github.com/arunanshub/preload/issues"',
-})
+conf = configuration_data()
+
+conf.set_quoted('PACKAGE', meson.project_name())
+conf.set_quoted('LOGDIR', get_option('localstatedir') / 'log')
+conf.set_quoted('SYSCONFDIR', get_option('sysconfdir'))
+conf.set_quoted('SHAREDSTATEDIR', get_option('sharedstatedir'))
+conf.set_quoted('PACKAGE_VERSION', meson.project_version())
+conf.set_quoted('PACKAGE_STRING',
+  '@0@ @1@'.format(meson.project_name(), meson.project_version()),
+)
+conf.set_quoted('PACKAGE_NAME', meson.project_name())
+conf.set_quoted('PACKAGE_BUGREPORT',
+  'https://github.com/arunanshub/preload/issues')
 
 configure_file(
   output : 'config.h',
-  configuration : conf_data,
+  configuration : conf,
 )
 # 1}}} #
 
@@ -100,13 +103,20 @@ exe = executable(
   dependencies : dependencies,
   install : true,
 )
-#
+
+# tests {{{1 #
 # test('preload with debug config', exe, args : [
-#   '-c preload.conf -s \'\' -d',
+#   '-c', 'preload.conf',
+#   '-s', '',
+#   '-d',
 #   ],
 # )
 #
-# test('preload with normal config', exe, args : [
-#   '-c preload.conf -s \'\' -l \'\' -f',
+# test('with normal config', exe, args : [
+#   '-c', 'preload.conf',
+#   '-s', '',
+#   '-l', '',
+#   '-f',
 #   ],
 # )
+# }}}1 #
