@@ -12,6 +12,18 @@ that you check [`meson.build`](/meson.build) first.
 Configuration file for `preload` is generated from buildfile (`meson.build`)
 itself.
 
+## Building
+
+It is highly recommended that you use `prefix` as `/usr`.
+
+The proper way to build is:
+
+```bash
+meson build --prefix=/usr
+# ...
+ninja -C build
+```
+
 ## Why `meson`?
 
 - Because it is easier to configure.
