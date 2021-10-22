@@ -48,13 +48,5 @@ clang-format \
     --dump-config > .clang-format
 ```
 
-Since `include/confkeys.h` is also used by a configuration file generator
-script, don't run `clang-format` on it. You can put that file in
-`.clang-format-ignore` like this:
-
-```bash
-echo 'include/confkeys.h' > .clang-format-ignore
-```
-
 Check [Mesonbuild's guide on `clang-format`](https://mesonbuild.com/Code-formatting.html)
 for more info.
