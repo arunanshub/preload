@@ -39,11 +39,6 @@ add_project_arguments(
 # 1}}} #
 
 # config.h data {{{1 #
-PACKAGE_STRING = '"@0@ @1@"'.format(
-  meson.project_name(),
-  meson.project_version()
-)
-
 conf = configuration_data()
 
 conf.set_quoted('PACKAGE', meson.project_name())
