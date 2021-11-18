@@ -24,6 +24,25 @@ meson build --prefix=/usr
 ninja -C build
 ```
 
+## Testing
+
+Since `preload` is an executable, the tests are defined in a bash script
+[`runtests.sh`](/runtests.sh), and are run via `meson`.
+
+You can use
+
+```sh
+ninja -C build test
+```
+
+or
+
+```sh
+meson test -C build
+```
+
+to run the tests.
+
 ## Why `meson`?
 
 - Because it is easier to configure.
