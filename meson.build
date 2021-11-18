@@ -100,18 +100,22 @@ exe = executable(
 )
 
 # tests {{{1 #
-# test('preload with debug config', exe, args : [
-#   '-c', 'preload.conf',
-#   '-s', '',
-#   '-d',
-#   ],
-# )
-#
-# test('with normal config', exe, args : [
-#   '-c', 'preload.conf',
-#   '-s', '',
-#   '-l', '',
-#   '-f',
-#   ],
-# )
+testexe = find_program('runtests.sh')
+env = {
+  'APPNAME': exe.full_path(),
+}
+
+test(
+  'With debug config',
+  testexe,
+  args : ['debug'],
+  env : env,
+)
+
+test(
+  'With normal config',
+  testexe,
+  args : ['normal'],
+  env : env,
+)
 # }}}1 #
