@@ -24,6 +24,13 @@ meson build --prefix=/usr
 ninja -C build
 ```
 
+Even if you don't use `--prefix`, it is `/usr` by default.
+
+### Manpage Generation
+
+Optionally, you'd require `help2man` for dynamic manpage generation, which is
+handled directly by Meson.
+
 ## Testing
 
 Since `preload` is an executable, the tests are defined in a bash script
