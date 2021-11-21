@@ -103,7 +103,7 @@ exe = executable(
 # Manpage generation and installation {{{1 #
 help2man = find_program('help2man', required : false, disabler : true)
 
-help2man.found() ? '' : warning('help2man not found. Not installing manpage')
+help2man.found() ? '' : warning('help2man not found. Not building manpage')
 
 section = 8
 
