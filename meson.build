@@ -110,7 +110,7 @@ section = 8
 help2man_opts = [
   '--no-info',
   '--section=@0@'.format(section),
-  '--name="Adaptive readahead daemon"',
+  '--name=Adaptive readahead daemon',
 ]
 
 custom_target(
