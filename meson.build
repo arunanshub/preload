@@ -1,9 +1,13 @@
-# vim:set et sw=2 ts=4 tw=80 fdm=marker:
+# vim:set et sw=2 ts=2 tw=79 fdm=marker:
 project('preload', 'c',
   version : '0.1.5',
   meson_version : '>=0.59.1',
   license : 'GPL-2.0-only',
-  default_options : ['warning_level=3', 'buildtype=debugoptimized'],
+  default_options : [
+    'warning_level=3',
+    'buildtype=debugoptimized',
+    'prefix=/usr',
+  ],
 )
 
 cc = meson.get_compiler('c')
@@ -32,10 +36,7 @@ foreach header : ['sys/types.h', 'linux/fs.h']
   endif
 endforeach
 
-add_project_arguments(
-  macros,
-  language: 'c',
-)
+add_project_arguments(macros, language: 'c')
 # 1}}} #
 
 # config.h data {{{1 #
@@ -98,6 +99,39 @@ exe = executable(
   dependencies : dependencies,
   install : true,
 )
+
+# Manpage generation and installation {{{1 #
+help2man = find_program('help2man', required : false, disabler : true)
+
+help2man.found() ? '' : warning('help2man not found. Not installing manpage')
+
+section = 8
+
+help2man_opts = [
+  '--no-info',
+  '--section=@0@'.format(section),
+  '--name="Adaptive readahead daemon"',
+]
+
+custom_target(
+  '@0@.@1@'.format(exe.name(), section),
+  input : 'man' / '@0@.@1@.i'.format(exe.name(), section),
+  output : '@0@.@1@'.format(exe.name(), section),
+  build_by_default : true,
+  command : [
+    help2man,
+    help2man_opts,
+    '--include=@INPUT@',
+    '--output=@OUTPUT@',
+    exe,
+  ],
+  install : true,
+  # using `install_man(...)` tries to search for the (nonexistent) manpage, but
+  # since it is generated dynamically during build time, we have to manually
+  # specify install dir.
+  install_dir : get_option('mandir') / 'man@0@'.format(section),
+)
+# 1}}} #
 
 # tests {{{1 #
 testexe = find_program('runtests.sh')
