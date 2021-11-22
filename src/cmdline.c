@@ -116,12 +116,11 @@ void preload_cmdline_parse(int* argc, char*** argv) {
 
 static void version_func(void) {
     printf(
-        "%s\n\nCopyright (C) 2005,2006,2007,2008 Behdad Esfahbod.\n"
-        "This is free software; see the source for copying conditions.  "
-        "There is NO\n"
-        "warranty; not even for MERCHANTABILITY or FITNESS FOR A "
-        "PARTICULAR PURPOSE.\n"
-        "\n"
+        "%s\n\nCopyright (C) 2005, 2006, 2007, 2008 Behdad Esfahbod.\n"
+        "This is free software; see the source for copying conditions.  There "
+        "is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A "
+        "PARTICULAR PURPOSE."
+        "\n\n"
         "Written by Behdad Esfahbod <behdad@gnu.org>\n",
         PACKAGE_STRING);
     exit(EXIT_SUCCESS);
@@ -135,11 +134,10 @@ static void help_func(gboolean err, gboolean help2man) {
 
     fprintf(
         f,
-        "%s\n\n"
         "Usage: %s [OPTION]...\n"
         "%s is an adaptive readahead daemon that prefetches files mapped by\n"
         "applications from the disk to reduce application startup time.\n\n",
-        PACKAGE_STRING, PACKAGE,
+        PACKAGE,
         PACKAGE_NAME);  // TODO: Should `PACKAGE` be `PACKAGE_NAME`?
 
     for (opt = opts; opt->name; opt++) {
